@@ -1,6 +1,7 @@
-before_script: gem install hoe
-before_script: gem install rake-compiler -v0.8.1
-before_script: gem install hoe-deveiate -v0.1.1
+before_script:
+  - gem install hoe
+  - gem install rake-compiler -v0.8.1
+  - gem install hoe-deveiate -v0.1.1
 
 language: ruby
 rvm:
