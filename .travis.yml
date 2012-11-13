@@ -1,0 +1,17 @@
+before_script: gem install hoe
+before_script: gem install rake-compiler -v0.8.1
+before_script: gem install hoe-deveiate -v0.1.1
+
+language: ruby
+rvm:
+  - 1.8.7
+  - 1.9.3
+  - rbx-18mode
+  - rbx-19mode
+matrix:
+  allow_failures:
+    - rvm: 1.8.7
+    - rvm: 1.9.3
+branches:
+  only:
+    - master
