@@ -48,7 +48,7 @@ module PG::TestingHelpers
 		attributes = ANSI_ATTRIBUTES.values_at( *attributes ).compact.join(';')
 
 		# $stderr.puts "  attr is: %p" % [attributes]
-		if attributes.empty? 
+		if attributes.empty?
 			return ''
 		else
 			return "\e[%sm" % attributes
@@ -56,7 +56,7 @@ module PG::TestingHelpers
 	end
 
 
-	### Colorize the given +string+ with the specified +attributes+ and return it, handling 
+	### Colorize the given +string+ with the specified +attributes+ and return it, handling
 	### line-endings, color reset, etc.
 	def colorize( *args )
 		string = ''
@@ -112,7 +112,7 @@ module PG::TestingHelpers
 
 	NOFORK_PLATFORMS = %w{java}
 
-	### Run the specified command +cmd+ after redirecting stdout and stderr to the specified 
+	### Run the specified command +cmd+ after redirecting stdout and stderr to the specified
 	### +logpath+, failing if the execution fails.
 	def log_and_run( logpath, *cmd )
 		cmd.flatten!
@@ -179,6 +179,7 @@ module PG::TestingHelpers
 	def setup_testing_db( description )
 		require 'pg'
 		stop_existing_postmasters()
+    modify_path_for_pg_commands()
 
 		puts "Setting up test database for #{description} tests"
 		@test_pgdata = TEST_DIRECTORY + 'data'
@@ -229,6 +230,25 @@ module PG::TestingHelpers
 		conn.finish if conn
 		log_and_run @logfile, 'pg_ctl', '-D', @test_pgdata.to_s, 'stop'
 	end
+
+  def modify_path_for_pg_commands
+    located = `locate initdb`
+    command = located[%r{^(.*/postgresql/\d\.\d/bin/initdb)$}]
+
+    if command
+      $stderr.puts "Found initdb: #{command}"
+      path = File.dirname(command.chomp)
+
+      unless ENV['PATH'][/postgresql/]
+        $stderr.puts "Modifying PATH"
+        ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+      end
+    else
+      $stderr.puts "*" * 80
+      $stderr.puts located.split("\n")
+      $stderr.puts "*" * 80
+    end
+  end
 end
 
 
